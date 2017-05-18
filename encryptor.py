@@ -5,56 +5,54 @@
 #Desc: Encrypts a string by using each character as a new key
  
 def main():
-	message = raw_input("Enter a message: ")
-	encrypted_message_array = list(message)
-	# print(encrypted_message_array)
+	original_message = raw_input("Enter a message: ")
+	char_array = list(original_message)	#split input into idvidual characters
+	# print(char_array)	#debug output
 
-	key_char = ord(encrypted_message_array[0])
-	prev_char = 13
-	new_encrypted_message_array = []
-	char_encrypted_message_array = []
+	key_char = ord(char_array[0])	# get the first character in the message for later key obfuscation
+	prev_char = 13 					# inital key = 13 (ROT-13)
+	encrypted_char_array = [] 		# stores encrypted characters
+	original_char_code_array = [] 	# stores original character codes
 
-	for char in encrypted_message_array:
+	for char in char_array:
 
-		char_code = ord(char)
-		new_char = char_code + prev_char
+		char_code = ord(char) 	#get ascii value of character
+		new_char = char_code + prev_char #encrypted character shifts by the ascii value of the previous character
 
-		char_encrypted_message_array.append(char_code)
+		# while new_char > 126 or 32 > new_char: 	#broken wrapping, included for no reason
+		# 	# print("subtracting")
+		# 	if new_char > 126:
+		# 		new_char -= 126
+		# 	elif new_char < 32:
+		# 		new_char += 32
 
-		while new_char > 126 or 32 > new_char:
-			# print("subtracting")
-			if new_char > 126:
-				new_char -= 126
-			elif new_char < 32:
-				new_char += 32
+		while new_char > 126: 		#fixed wrapping, characters will wrap from >126 to >32
+			new_char = 32 + (new_char-126)
 
-
-		new_encrypted_message_array.append(new_char)
-		# print(prev_char)
+		original_char_code_array.append(char_code)
+		encrypted_char_array.append(new_char)
+		# print(prev_char) 	#debug output
 		# print(new_char)
-		prev_char = new_char
+		prev_char = new_char #key for next character
 
-	key_char += ord(encrypted_message_array[(len(encrypted_message_array)-1)])
-
-	while key_char > 126 or 32 > key_char:
-		# print("subtracting")
-		if key_char > 126:
-			key_char -= 126
-		elif key_char < 32:
-			key_char += 32
+	key_char += ord(char_array[(len(char_array)-1)]) 	#get the final character in the message
+   														# to encrypt the first character
+	while key_char > 126:
+		# print("wrapper key: {}").format(key_char)	#debug output
+	 	key_char = 32 + (126-new_char)
 	
 
-	new_encrypted_message_array[0] = key_char
-	# print(char_encrypted_message_array)
-	# print(new_encrypted_message_array)
+	encrypted_char_array[0] = key_char
+	# print(original_char_code_array)	#debug output
+	# print(encrypted_char_array)
 
-	final_message = []
+	final_message_array = []
 
-	for char in new_encrypted_message_array:
-		final_message.append(chr(char))
+	for char in encrypted_char_array:
+		final_message_array.append(chr(char))
 
-	# print(final_message)
-	final_message_string = "".join(final_message)
-	print("Encrypted message: {}").format(final_message_string)
+	# print(final_message_array)
+	final_message_string = "".join(final_message_array)
+	print("Encrypted message: {}").format(final_message_string) 	#output message
 if __name__ == "__main__":
 	main()

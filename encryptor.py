@@ -1,23 +1,28 @@
+#auth: Lysergic
+#name: rot-13.py
+#desc: encrypts/decrypts text using a custom form of ROT-13
+
 import getopt, sys
 
+#global variables
 inputFile 	= ""
 outputFile 	= ""
 encrypt 	= False
 decrypt 	= False
 
-def readFile(inputFile):
+def readFile(inputFile): 	#read from input file
 	message = ""
 	fi = open(inputFile, "r")
 	for line in fi:
 		message += line
 	return message
 
-def getMessage():
+def getMessage(): 			#read from stdin
 	message = raw_input("Enter message    : ")
 	message += "\n"
 	return message
 
-def decryptMode():
+def decryptMode(): 	#decryption section
 	global outputFile
 	global inputFile
 	original_message = ""
@@ -27,7 +32,47 @@ def decryptMode():
 	elif inputFile:
 		original_message = readFile(inputFile)
 
-def encryptMode():
+	new_char_array = []
+	char_array = original_message
+	char_array = list(char_array)
+	print(char_array)
+	# print len(char_array)
+	# print len(char_array) -1
+
+	key_char = ord(char_array[(len(char_array)-1)]) #get last character in string
+	key = ord(char_array[0]) - key_char #create key
+
+	while key < 32:
+		key = 126 - (32-key)
+
+	print("key={}").format(key)
+
+	for char in range(len(char_array)):
+		# print(char)
+		# print(ord(char_array[(len(char_array)-1)]))
+		process_char = ord(char_array[(len(char_array)-(char+1))])
+		key = ord(char_array[(len(char_array)-(char+2))])
+		# print("process_char={}").format(process_char)
+		# print("key={}").format(key)
+
+		new_char = process_char - key
+		
+		while new_char < 32:
+			new_char = 126 - (32-new_char)
+
+		# print(process_char)
+		# print("new_char={}").format(new_char)
+		new_char_array.append(chr(new_char))
+		# print("---------------------------")
+		# print
+
+
+
+	new_char_array = "".join(new_char_array)
+	new_char_array = new_char_array[::-1]
+	print(new_char_array)
+
+def encryptMode(): 	#encryption section
 	global outputFile
 	global inputFile
 	original_message = ""
